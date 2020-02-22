@@ -61,6 +61,9 @@ aiobotocore==0.11.1
 # homeassistant.components.esphome
 aioesphomeapi==2.6.1
 
+# homeassistant.components.harmony
+aioharmony==0.1.13
+
 # homeassistant.components.emulated_hue
 # homeassistant.components.http
 aiohttp_cors==0.7.0

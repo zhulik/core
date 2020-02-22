@@ -11,6 +11,12 @@ SSDP = {
             "manufacturer": "Royal Philips Electronics"
         }
     ],
+    "harmony": [
+        {
+            "deviceType": "urn:myharmony-com:device:harmony:1",
+            "manufacturer": "Logitech"
+        }
+    ],
     "heos": [
         {
             "st": "urn:schemas-denon-com:device:ACT-Denon:1"

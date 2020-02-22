@@ -63,6 +63,18 @@ HARMONY_CHANGE_CHANNEL_SCHEMA = vol.Schema(
 )
 
 
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    """Set up the Harmony config entry."""
+    await async_setup_platform(
+        hass,
+        {
+            CONF_HOST: config_entry.data.get(CONF_HOST),
+            CONF_NAME: config_entry.data.get(CONF_NAME),
+        },
+        async_add_entities,
+    )
+
+
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the Harmony platform."""
     activity = None
@@ -204,6 +216,21 @@ class HarmonyRemote(remote.RemoteDevice):
                 _LOGGER.warning("%s: Disconnect timed-out", self._name)
 
         self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, shutdown)
+
+    @property
+    def device_info(self):
+        """Return device info."""
+        return {
+            "identifiers": {(DOMAIN, self.unique_id)},
+            "manufacturer": "Logitech",
+            "sw_version": self._client.fw_version,
+            "name": self.name,
+        }
+
+    @property
+    def unique_id(self):
+        """Return the unique id."""
+        return self._client.hub_config.info.get("activeRemoteId")
 
     @property
     def name(self):
