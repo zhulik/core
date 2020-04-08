@@ -1,6 +1,6 @@
 {
+  "title": "Vizio SmartCast",
   "config": {
-    "title": "Vizio SmartCast",
     "step": {
       "user": {
         "title": "Setup Vizio SmartCast Device",
