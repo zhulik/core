@@ -10,7 +10,10 @@ import async_timeout
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import callback
-from homeassistant.util.json import find_paths_unserializable_data
+from homeassistant.util.json import (
+    find_paths_unserializable_data,
+    format_unserializable_data,
+)
 
 from .auth import AuthPhase, auth_required_message
 from .const import (
@@ -79,7 +82,7 @@ class WebSocketHandler:
                     )
                     self._logger.error(
                         "Unable to serialize to JSON. Bad data found at %s",
-                        ", ".join(
+                        format_unserializable_data(
                             find_paths_unserializable_data(message, dump=JSON_DUMP)
                         ),
                     )
