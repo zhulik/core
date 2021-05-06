@@ -2,7 +2,8 @@
 from datetime import datetime, timedelta, timezone
 import logging
 
-from n26 import api as n26_api, config as n26_config
+from n26.api import Api
+from n26.config import Config
 from requests import HTTPError
 import voluptuous as vol
 
@@ -11,7 +12,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.discovery import load_platform
 from homeassistant.util import Throttle
 
-from .const import DATA, DOMAIN
+from .const import CONF_DEVICE_TOKEN, DATA, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -26,6 +27,7 @@ CONFIG_SCHEMA = vol.Schema(
                 {
                     vol.Required(CONF_USERNAME): cv.string,
                     vol.Required(CONF_PASSWORD): cv.string,
+                    vol.Required(CONF_DEVICE_TOKEN): cv.string,
                     vol.Optional(
                         CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
                     ): cv.time_period,
@@ -48,8 +50,19 @@ def setup(hass, config):
     for acc in acc_list:
         user = acc[CONF_USERNAME]
         password = acc[CONF_PASSWORD]
+        device_token = acc[CONF_DEVICE_TOKEN]
 
-        api = n26_api.Api(n26_config.Config(user, password))
+        conf = Config(validate=False)
+
+        conf.USERNAME.value = user
+        conf.PASSWORD.value = password
+        conf.DEVICE_TOKEN.value = device_token
+
+        conf.LOGIN_DATA_STORE_PATH.value = "~/.config/n26/token"
+        conf.MFA_TYPE.value = "app"
+        conf.validate()
+
+        api = Api(conf)
 
         try:
             api.get_token()
